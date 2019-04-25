@@ -23,7 +23,7 @@ $targetNamespaceMap = CodeGenerator::$currentConfig->getModelName2NamespaceMap()
 $useStatements = '';
 if(isset($targetNamespaceMap[$name])) {
     $targetNamespace = $targetNamespaceMap[$name]->getName();
-    $useStatements .= "use ".$targetNamespace."\\$name;\n";
+    $useStatements .= "use ".$targetNamespace.'\\'.$name."Record;\n";
 }
 
 $copyright = CodeGenerator::$currentConfig->getCopyrightInformation();
