@@ -9,6 +9,7 @@
 namespace POOQ\SqlBuilding\Select;
 
 use POOQ\Condition;
+use function POOQ\Database;
 use POOQ\Field;
 use POOQ\FieldList;
 use POOQ\FieldOrTable;

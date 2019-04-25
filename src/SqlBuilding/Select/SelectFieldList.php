@@ -12,6 +12,7 @@ use POOQ\Collection\AbstractList;
 use POOQ\Collection\VariableType;
 use POOQ\Collection\VariableTypeInstance;
 use POOQ\ColumnField;
+use function POOQ\Database;
 use POOQ\Field;
 use POOQ\FieldList;
 
