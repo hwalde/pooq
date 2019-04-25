@@ -1,0 +1,6 @@
+Future releases:
+- Support copyright setting
+- Add code-generation for intoTableXY-methods of Result and ResultList
+- Add insert/update/delete
+- Support further SQL features
+- Put exceptions in subdirectory

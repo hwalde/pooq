@@ -1,0 +1,7 @@
+.idea
+gensrc
+test
+vendor
+composer.lock
+pooq.iml
+test.php
