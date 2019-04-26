@@ -13,7 +13,7 @@ class POOQ
     /** @var \PDO */
     private static $pdo;
 
-    public static function initilizeUsingExistingPdo(\PDO $pdo) {
+    public static function initializeUsingExistingPdo(\PDO $pdo) {
         self::$pdo = $pdo;
     }
 

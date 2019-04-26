@@ -84,7 +84,7 @@ Before querying you need to initialize POOQ once.
 ```
 Alternatively an existing [PDO](https://www.php.net/manual/en/book.pdo.php) can be used:
 ```php
-\POOQ\POOQ::initilizeUsingExistingPdo($yourPdoObject);
+\POOQ\POOQ::initializeUsingExistingPdo($yourPdoObject);
 ```
 
 #### Creating a select query
