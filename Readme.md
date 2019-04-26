@@ -33,47 +33,6 @@ require __DIR__ . '/vendor/autoload.php';
 
 ## Example usage
 
-###Code Generation
-```php
-$config = new \POOQ\CodeGeneration\CodeGeneratorConfig(__DIR__.DIRECTORY_SEPARATOR.'gensrc');
-$config->setCopyrightInformation(
-<<<END
-/**
- * Your custom copyright text!
- */
-END
-);
-
-// This is optional:
-$config->setNameMap(
-    [
-        // column or tablename => camel-case-name starting lowercase
-        'userid' => 'userId',
-        'display_order' => 'displayOrder',
-        'accessmask' => 'accessMask',
-        'product' => 'product',
-    ]
-);
-
-// This is optional:
-$businesslogicFolderPath = __DIR__.'/test/businesslogic';
-$config->setModelName2NamespaceMap(new \POOQ\CodeGeneration\ModelName2NamespaceMap(
-    [
-        // Name of model class => NamespaceObject-object
-        'Post' => new \POOQ\CodeGeneration\NamespaceObject(
-            'businesslogic\\post',
-            $businesslogicFolderPath.'/post'
-        ),
-        'Forum' => new \POOQ\CodeGeneration\NamespaceObject(
-            'businesslogic\\forum',
-            $businesslogicFolderPath.'/forum'
-        ),
-    ]
-));
-$generator = new \POOQ\CodeGeneration\CodeGenerator($config);
-$generator->convertDatabase('database_name', 'username', 'password', 'hostname', 3306);
-```
-
 ### Querying
 
 #### Initialize for querying
@@ -128,11 +87,46 @@ foreach($threadList as $thread) { // for each row
 // (Yes we could do some stuff with the forum fields here as well.)
 ```
 
-## Further reading
+### Code Generation
+```php
+$config = new \POOQ\CodeGeneration\CodeGeneratorConfig(__DIR__.DIRECTORY_SEPARATOR.'gensrc');
+$config->setCopyrightInformation(
+<<<END
+/**
+ * Your custom copyright text!
+ */
+END
+);
 
-Read the [jOOQ documentation](https://www.jooq.org/doc/3.11/manual/) to get an understanding how POOQ works.
+// This is optional:
+$config->setNameMap(
+    [
+        // column or tablename => camel-case-name starting lowercase
+        'userid' => 'userId',
+        'display_order' => 'displayOrder',
+        'accessmask' => 'accessMask',
+        'product' => 'product',
+    ]
+);
 
-Feel free to ask me anything!
+// This is optional:
+$businesslogicFolderPath = __DIR__.'/test/businesslogic';
+$config->setModelName2NamespaceMap(new \POOQ\CodeGeneration\ModelName2NamespaceMap(
+    [
+        // Name of model class => NamespaceObject-object
+        'Post' => new \POOQ\CodeGeneration\NamespaceObject(
+            'businesslogic\\post',
+            $businesslogicFolderPath.'/post'
+        ),
+        'Forum' => new \POOQ\CodeGeneration\NamespaceObject(
+            'businesslogic\\forum',
+            $businesslogicFolderPath.'/forum'
+        ),
+    ]
+));
+$generator = new \POOQ\CodeGeneration\CodeGenerator($config);
+$generator->convertDatabase('database_name', 'username', 'password', 'hostname', 3306);
+```
 
 ## Contribution
 
