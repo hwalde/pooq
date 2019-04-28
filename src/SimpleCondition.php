@@ -25,11 +25,11 @@ class SimpleCondition implements Condition
 
     public function and(Condition $condition): Condition
     {
-        return new SimpleCondition($this->toSql().' AND '.$condition->toSql());
+        return new SimpleCondition('('.$this->toSql().' AND '.$condition->toSql().')');
     }
 
     public function or(Condition $condition): Condition
     {
-        return new SimpleCondition($this->toSql().' OR '.$condition->toSql());
+        return new SimpleCondition('('.$this->toSql().' OR '.$condition->toSql().')');
     }
 }
