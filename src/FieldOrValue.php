@@ -35,5 +35,10 @@ abstract class FieldOrValue
         return new SimpleCondition($this->toSql().' IS NULL');
     }
 
+    public function isNotNull() : Condition
+    {
+        return new SimpleCondition($this->toSql().' IS NOT NULL');
+    }
+
     public abstract function toSql(): string;
 }
