@@ -76,7 +76,7 @@ class Result
 
     /**
      * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
-     * @return Record
+     * @return mixed
      * @throws SelectFieldNotFoundException
      */
     public function into($table) {
