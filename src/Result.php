@@ -39,7 +39,7 @@ class Result
      * @throws \POOQ\Exception\SelectFieldNotFoundException
      */
     public function get(string $name) {
-        if(!isset($this->databaseRow[$name])) {
+        if(!array_key_exists($name, $this->databaseRow)) {
             throw new SelectFieldNotFoundException($name);
         }
         return $this->databaseRow[$name];
