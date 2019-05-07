@@ -1,5 +1,7 @@
 Future releases:
 - Clean up namespaces
+    - Move field related classes to Field-namespace
 - Add code-generation for intoTableXY-methods of Result and ResultList
 - Add insert/update/delete
 - Support further SQL features like Group By and Window Functions
+- Make sure aliased fields cannot be used in orderBy/where/.. unless they were declared in select

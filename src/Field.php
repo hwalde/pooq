@@ -8,6 +8,8 @@
  */
 namespace POOQ;
 
+use POOQ\Field\Functions\String\LengthFunction;
+
 abstract class Field extends FieldOrValue implements FieldOrTable
 {
     public abstract function getFieldName(): string;
@@ -20,5 +22,10 @@ abstract class Field extends FieldOrValue implements FieldOrTable
     public function desc(): Order
     {
         return new OrderImpl($this->toSql().' DESC');
+    }
+
+    public function length(): LengthFunction
+    {
+        return new LengthFunction($this);
     }
 }

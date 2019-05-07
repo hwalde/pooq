@@ -30,8 +30,7 @@ function select(...$fieldOrTableList) : SelectFromPart
     return call_user_func_array([$qb, 'select'], $fieldOrTableList);
 }
 
-function value($value) {
+function value($value): Value
+{
     return new Value($value);
 }
-
-
