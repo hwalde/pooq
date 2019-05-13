@@ -74,6 +74,16 @@ class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMain
     }
 
     /**
+     * Create an "SELECT COUNT(*) FROM ..." query
+     * @return SelectFromPart
+     */
+    function selectCount(): SelectFromPart
+    {
+        $this->sql = 'SELECT COUNT(*)';
+        return $this;
+    }
+
+    /**
      * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
      * @return SelectMainPart
      */
@@ -144,6 +154,15 @@ class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMain
     {
         $this->sql .= ' LIMIT '.$limit;
         return $this;
+    }
+
+    public function fetchOne() : string
+    {
+        $result = Database()->selectOne($this->getSql());
+        if($result === false) {
+            throw new MissingResultException('The query returned no result. fetchOne()-method expects at least one row with at least one column.');
+        }
+        return (string)$result;
     }
 
     public function fetch(): Result

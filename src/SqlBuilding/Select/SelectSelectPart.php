@@ -17,4 +17,10 @@ interface SelectSelectPart
      * @return SelectFromPart
      */
     public function select(...$fieldList) : SelectFromPart;
+
+    /**
+     * Create an "SELECT COUNT(*) FROM ..." query
+     * @return SelectFromPart
+     */
+    function selectCount() : SelectFromPart;
 }

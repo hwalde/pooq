@@ -30,6 +30,16 @@ function select(...$fieldOrTableList) : SelectFromPart
     return call_user_func_array([$qb, 'select'], $fieldOrTableList);
 }
 
+/**
+ * Create an "SELECT COUNT(*) FROM ..." query
+ * @return SelectFromPart
+ */
+function selectCount() : SelectFromPart
+{
+    $qb = new SelectQueryBuilder();
+    return $qb->selectCount();
+}
+
 function value($value): Value
 {
     return new Value($value);
