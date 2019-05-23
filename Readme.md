@@ -1,12 +1,11 @@
 # POOQ
 
-WARNING: POOQ is currently in **alpha** stage! Expect API changes. Expect bugs! Do not use it in production!
-
-## What POOQ is
-
-POOQ aims to be for PHP what [jOOQ](https://www.jooq.org/) is for Java. 
-
 POOQ generates PHP code from your database and lets you build type safe SQL queries through its fluent API. 
+
+
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.3-8892BF.svg?style=flat-square)](https://php.net/)
+<br><br>
+WARNING: POOQ is currently in **alpha** stage! Expect API changes. Expect bugs! Do not use it in production!
  
 ## Benefits
 
@@ -86,6 +85,8 @@ foreach($threadList as $thread) { // for each row
 
 // (Yes we could do some stuff with the forum fields here as well.)
 ```
+
+POOQ can handle queries with overlapping column names (from different tables). For example, if forum and thread would both have a column "title" then each value would still be mapped to the correct object. 
 
 ### Code Generation
 ```php
