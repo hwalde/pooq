@@ -67,6 +67,19 @@ LIMIT 10
 OFFSET 0
 ```
 
+Alias names are optional. You can always use the models directly:
+```php
+echo select(Thread::title(), Thread::lastPoster())
+    ->from(Thread::class)
+    // ...
+```
+Outputs:
+```sql
+SELECT `thread`.`title` as `title`, `thread`.`lastposter` as `lastposter`
+FROM `thread`
+...
+```
+
 #### Mapping results to objects
 ```php
 $f = Forum::as('f'); 
@@ -87,6 +100,41 @@ foreach($threadList as $thread) { // for each row
 ```
 
 POOQ can handle queries with overlapping column names (from different tables). For example, if forum and thread would both have a column "title" then each value would still be mapped to the correct object. 
+
+#### Execute update queries
+
+```php
+update(Forum::class) 
+    ->set(Forum::title(), 'New title')
+    ->set(Forum::description(), 'Lorem ipsum ..')
+    ->where(Forum::forumId()->eq(value(123)))
+    ->execute();
+```
+executes query:
+```sql
+UPDATE forum 
+SET `title` = 'New title',
+SET `description` = 'Lorem ipsum ..'
+WHERE `id` = 123
+```
+
+Using subqueries in update:
+```php
+update(Thread::class) 
+    ->set(Thread::forumId(), 
+        select(Forum::forumId())
+            ->from(Forum::class)
+            ->where(Forum::title()->eq(value('Sample title')))
+    )
+    ->where(Thread::threadId()->eq(value(123)))
+    ->execute();
+```
+executes query:
+```sql
+UPDATE forum 
+SET `forumId` = (SELECT `forum`.forumId` FROM `forum` WHERE `forum`.`title` = 'Sample title')
+WHERE `id` = 123
+```
 
 ### Code Generation
 ```php
