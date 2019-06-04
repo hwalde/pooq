@@ -10,6 +10,8 @@ namespace POOQ;
 
 use POOQ\SqlBuilding\Select\SelectFromPart;
 use POOQ\SqlBuilding\Select\SelectQueryBuilder;
+use POOQ\SqlBuilding\Update\UpdateQueryBuilder;
+use POOQ\SqlBuilding\Update\UpdateSetPart;
 
 function &Database(): Database
 {
@@ -38,6 +40,16 @@ function selectCount() : SelectFromPart
 {
     $qb = new SelectQueryBuilder();
     return $qb->selectCount();
+}
+
+/**
+ * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
+ * @return UpdateSetPart
+ */
+function update($table) : UpdateSetPart
+{
+    $qb = new UpdateQueryBuilder();
+    return $qb->update($table);
 }
 
 function value($value): Value

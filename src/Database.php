@@ -211,4 +211,12 @@ class Database {
             }
         }
     }
+
+    public function executeAndCountAffectedRows(string $sql, array $bindValues = []) {
+        $statement = $this->pdo->prepare($sql);
+        $this->bindValues($statement, $bindValues);
+        $rowCount = $statement->rowCount();
+        $statement->closeCursor();
+        return $rowCount;
+    }
 }

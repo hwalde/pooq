@@ -17,11 +17,14 @@ use POOQ\FieldOrTable;
 use POOQ\Order;
 use POOQ\Result;
 use POOQ\ResultList;
+use POOQ\SqlBuilding\SqlBuildingHelperTrait;
 use POOQ\Table;
 use POOQ\TableAlias;
 
 class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMainPart, SelectOnPart
 {
+    use SqlBuildingHelperTrait;
+
     /** @var string */
     private $sql;
 
@@ -91,23 +94,6 @@ class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMain
     {
         $this->sql .= ' FROM '.$this->getQuotedTableName($table);
         return $this;
-    }
-
-    /**
-     * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
-     */
-    private function getQuotedTableName($table): string
-    {
-        if(is_string($table)) {
-            $table = new $table();
-        }
-        if(is_object($table) && $table instanceof TableAlias) {
-            return $table->getTableName().' '.$table->getAliasName();
-        } else if(is_object($table) && $table instanceof Table) {
-            return $table->getTableName();
-        } else {
-            throw new \InvalidArgumentException('Expected instance of "'.FieldOrTable::class.'"!');
-        }
     }
 
     /**
