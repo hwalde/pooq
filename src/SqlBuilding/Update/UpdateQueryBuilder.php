@@ -11,6 +11,7 @@ namespace POOQ\SqlBuilding\Update;
 use POOQ\AbstractColumnField;
 use POOQ\Condition;
 use function POOQ\Database;
+use POOQ\SqlBuilding\Select\SelectEndPart;
 use POOQ\SqlBuilding\SqlBuildingHelperTrait;
 use POOQ\Table;
 use POOQ\TableAlias;
@@ -37,12 +38,17 @@ class UpdateQueryBuilder implements UpdateSetPart, UpdateWherePart, UpdateEndPar
 
     /**
      * @param AbstractColumnField $field
-     * @param $value
+     * @param string|int|float|bool|double|SelectEndPart $value
      * @return UpdateWherePart
      */
     public function set(AbstractColumnField $field, $value): UpdateWherePart
     {
-        $this->sql .= Database()->quoteIdentifier($field->getColumnName()).' = '.Database()->quote($value);
+        $this->sql .= Database()->quoteIdentifier($field->getColumnName()).' = ';
+        if($value instanceof SelectEndPart) {
+            $this->sql .= '('.$value->getSql().')';
+        } else {
+            $this->sql .= Database()->quote($value);
+        }
         if(!$this->hasSetBeenCalled) {
             $this->sql .= ', ';
         }

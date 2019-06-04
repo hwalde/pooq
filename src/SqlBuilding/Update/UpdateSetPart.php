@@ -9,8 +9,14 @@
 namespace POOQ\SqlBuilding\Update;
 
 use POOQ\AbstractColumnField;
+use POOQ\SqlBuilding\Select\SelectEndPart;
 
 interface UpdateSetPart
 {
+    /**
+     * @param AbstractColumnField $field
+     * @param string|int|float|bool|double|SelectEndPart $value
+     * @return UpdateWherePart
+     */
     public function set(AbstractColumnField $field, $value) : UpdateWherePart;
 }
