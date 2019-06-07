@@ -6,7 +6,7 @@
   "prefer-stable": true,
   "require": {
     "ext-PDO": "*",
-    "hwalde/database2code": "v0.11.0-beta"
+    "hwalde/database2code": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.0"
