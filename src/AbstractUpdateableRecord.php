@@ -72,8 +72,8 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
 
         $id = $insertQuery->execute();
 
-        if(count($this->__listPrimaryKeyColumns())==1) {
-            $pkColumnName = $this->__listPrimaryKeyColumns()[0];
+        if(count($this->__getModel()->__listPrimaryKeyColumns())==1) {
+            $pkColumnName = $this->__getModel()->__listPrimaryKeyColumns()[0];
             $pkFieldName = $nameMap[$pkColumnName];
             $this->$pkFieldName = $id;
         } else {
@@ -109,7 +109,7 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
      */
     private function validatePrimaryKeyValuesExist(string $actionName): void
     {
-        foreach ($this->__listPrimaryKeyColumns() as $columnName) {
+        foreach ($this->__getModel()->__listPrimaryKeyColumns() as $columnName) {
             $recordClassName = get_class($this);
             $fieldName = $this->__getModel()->__getColumn2NameMap()[$columnName];
             if($this->$fieldName === null) {
@@ -120,11 +120,6 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
     }
 
     /**
-     * @return string[]
-     */
-    abstract protected function __listPrimaryKeyColumns(): array;
-
-    /**
      * @return Condition
      */
     private function getSqlWhereCondition(): Condition
@@ -133,7 +128,7 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
 
         /** @var Condition $condition */
         $condition = null;
-        foreach ($this->__listPrimaryKeyColumns() as $columnName) {
+        foreach ($this->__getModel()->__listPrimaryKeyColumns() as $columnName) {
             $fieldName = $nameMap[$columnName];
             $value = $this->$fieldName;
             /** @var Field $field */

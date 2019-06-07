@@ -27,6 +27,13 @@ $columnsListAsPHP = '['.implode(', ', $columnsList).']';
 $nullableColumnsListAsPHP = '['.implode(', ', $nullableColumnsList).']';
 $column2TypeMapAsPHP = '['.implode(', ', $column2TypeMap)."\n\t\t]";
 $column2NameMapAsPHP = '['.implode(', ', $column2NameMap)."\n\t\t]";
+
+$quotedPrimaryKeyColumnList = [];
+foreach ($table->getPrimaryKeyColumnList() as $primaryKeyColumn) {
+    $quotedPrimaryKeyColumnList[] = '\''.$primaryKeyColumn->getName().'\'';
+}
+$primaryKeyColumnsAsString = implode(', ', $quotedPrimaryKeyColumnList);
+
 return <<<ENDER
     public function getTableName(): string
     {
@@ -36,6 +43,14 @@ return <<<ENDER
     public function __listColumns() : array
     {
         return {$columnsListAsPHP};
+    }
+    
+    /**
+     * @return string[]
+     */
+    public function __listPrimaryKeyColumns(): array
+    {
+        return [$primaryKeyColumnsAsString];
     }
     
     public function __listNullableColumns() : array

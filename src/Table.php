@@ -29,4 +29,9 @@ interface Table extends FieldOrTable
     public function __getColumn2TypeMap() : array;
 
     public function __getColumn2NameMap() : array;
+
+    /**
+     * @return string[]
+     */
+    public function __listPrimaryKeyColumns(): array;
 }

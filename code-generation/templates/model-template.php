@@ -64,7 +64,6 @@ if($config->hasNamespace()) {
 
 $additionalMethods = include __DIR__.'/inc/additional-methods.inc.php';
 
-
 $targetNamespaceMap = CodeGenerator::$currentConfig->getModelName2NamespaceMap();
 $useStatements = '';
 if(isset($targetNamespaceMap[$modelName])) {
@@ -112,6 +111,5 @@ class {$modelName} implements Table {
     
 $constants$methods
 $additionalMethods
-
 }
 END;

@@ -133,23 +133,6 @@ if($table->containsPrimaryKey()) {
     $useStatements .= "use POOQ\\UpdateableRecord;\n";
     $extends = ' extends AbstractUpdateableRecord';
     $implements = ' implements UpdateableRecord';
-
-    // __listPrimaryKeyColumns-method:
-    $quotedPrimaryKeyColumnList = [];
-    foreach ($table->getPrimaryKeyColumnList() as $primaryKeyColumn) {
-        $quotedPrimaryKeyColumnList[] = '\''.$primaryKeyColumn->getName().'\'';
-    }
-    $primaryKeyColumnsAsString = implode(', ', $quotedPrimaryKeyColumnList);
-    $methods .= <<<END
-    /**
-     * @return string[]
-     */
-    protected function __listPrimaryKeyColumns(): array
-    {
-        return [$primaryKeyColumnsAsString];
-    }
-END;
-
 } else {
     $useStatements .= "use POOQ\\Record;\n";
     $extends = '';
