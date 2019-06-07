@@ -129,6 +129,8 @@ $constants = '';
 $copyright = CodeGenerator::$currentConfig->getCopyrightInformation();
 
 if($table->containsPrimaryKey()) {
+    $useStatements .= "use POOQ\\AbstractUpdateableRecord;\n";
+    $useStatements .= "use POOQ\\UpdateableRecord;\n";
     $extends = ' extends AbstractUpdateableRecord';
     $implements = ' implements UpdateableRecord';
 
@@ -142,13 +144,14 @@ if($table->containsPrimaryKey()) {
     /**
      * @return string[]
      */
-    protected function __listPrimaryKeyColumns(): array;
+    protected function __listPrimaryKeyColumns(): array
     {
         return [$primaryKeyColumnsAsString];
     }
 END;
 
 } else {
+    $useStatements .= "use POOQ\\Record;\n";
     $extends = '';
     $implements = ' implements Record';
 }
@@ -157,7 +160,6 @@ return <<<END
 <?php
 $copyright
 $namespace
-use POOQ\Record;
 $useStatements
 class Generated{$name}Record$extends$implements {
 $constants$properties$methods
