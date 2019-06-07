@@ -22,13 +22,13 @@ class CustomField extends Field implements FieldOrTable
         $this->sql = $sql;
     }
 
-    public function getFieldName(): string
+    public function getSqlName(): string
     {
         return $this->name;
     }
 
     public function toSql(): string
     {
-        return $this->sql.' AS '.Database()->quoteIdentifier($this->getFieldName());
+        return $this->sql.' AS '.Database()->quoteIdentifier($this->getSqlName());
     }
 }

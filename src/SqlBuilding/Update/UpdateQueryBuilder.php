@@ -34,6 +34,7 @@ class UpdateQueryBuilder implements UpdateSetPart, UpdateWherePart, UpdateEndPar
     {
         $this->hasSetBeenCalled = false;
         $this->sql = 'UPDATE '.$this->getQuotedTableName($table).' SET ';
+        return $this;
     }
 
     /**
@@ -43,16 +44,19 @@ class UpdateQueryBuilder implements UpdateSetPart, UpdateWherePart, UpdateEndPar
      */
     public function set(AbstractColumnField $field, $value): UpdateWherePart
     {
+        if(!$this->hasSetBeenCalled) {
+            $this->sql .= ', ';
+            $this->hasSetBeenCalled = true;
+        }
         $this->sql .= Database()->quoteIdentifier($field->getColumnName()).' = ';
-        if($value instanceof SelectEndPart) {
-            $this->sql .= '('.$value->getSql().')';
+        if($value === null) {
+            $this->sql .= 'NULL';
+        } else if($value instanceof SelectEndPart) {
+            $this->sql .= '('.$value->toSql().')';
         } else {
             $this->sql .= Database()->quote($value);
         }
-        if(!$this->hasSetBeenCalled) {
-            $this->sql .= ', ';
-        }
-        $this->hasSetBeenCalled = true;
+        return $this;
     }
 
     /**
@@ -63,6 +67,11 @@ class UpdateQueryBuilder implements UpdateSetPart, UpdateWherePart, UpdateEndPar
     {
         $this->sql .= ' WHERE '.$condition->toSql();
         return $this;
+    }
+
+    public function toSql(): string
+    {
+        return $this->sql;
     }
 
     /**

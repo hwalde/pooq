@@ -8,6 +8,10 @@
  */
 namespace POOQ;
 
+use POOQ\SqlBuilding\Delete\DeleteQueryBuilder;
+use POOQ\SqlBuilding\Delete\DeleteWherePart;
+use POOQ\SqlBuilding\Insert\InsertQueryBuilder;
+use POOQ\SqlBuilding\Insert\InsertSetPart;
 use POOQ\SqlBuilding\Select\SelectFromPart;
 use POOQ\SqlBuilding\Select\SelectQueryBuilder;
 use POOQ\SqlBuilding\Update\UpdateQueryBuilder;
@@ -48,11 +52,28 @@ function selectCount() : SelectFromPart
  */
 function update($table) : UpdateSetPart
 {
-    $qb = new UpdateQueryBuilder();
-    return $qb->update($table);
+    return (new UpdateQueryBuilder())->update($table);
 }
 
 function value($value): Value
 {
     return new Value($value);
+}
+
+/**
+ * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
+ * @return InsertSetPart
+ */
+function insertInto($table) : InsertSetPart
+{
+    return (new InsertQueryBuilder())->insertInto($table);
+}
+
+/**
+ * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
+ * @return DeleteWherePart
+ */
+function delete($table) : DeleteWherePart
+{
+    return (new DeleteQueryBuilder())->delete($table);
 }

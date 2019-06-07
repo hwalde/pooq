@@ -6,18 +6,14 @@
  *
  * For the full copyright and license information, read the LICENSE file that was distributed with this source code.
  */
-namespace POOQ\SqlBuilding\Select;
+namespace POOQ\SqlBuilding\Delete;
 
-use POOQ\Result;
-use POOQ\ResultList;
-
-interface SelectEndPart
+interface DeleteEndPart
 {
-    public function fetch() : Result;
-
-    public function fetchOne() : string;
-
-    public function fetchAll() : ResultList;
-
     public function toSql() : string;
+
+    /**
+     * @return int the number of deleted rows
+     */
+    public function execute() : int;
 }

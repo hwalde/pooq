@@ -19,15 +19,28 @@ trait SqlBuildingHelperTrait
      */
     private function getQuotedTableName($table): string
     {
-        if(is_string($table)) {
+        $table = $this->generateTableObject($table);
+
+        if ($table instanceof TableAlias) {
+            return $table->getTableName() . ' ' . $table->getAliasName();
+        } else {
+            return $table->getTableName();
+        }
+    }
+
+    /**
+     * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
+     * @return Table
+     */
+    private function generateTableObject($table)
+    {
+        if (is_string($table)) {
             $table = new $table();
         }
-        if(is_object($table) && $table instanceof TableAlias) {
-            return $table->getTableName().' '.$table->getAliasName();
-        } else if(is_object($table) && $table instanceof Table) {
-            return $table->getTableName();
+        if ($table instanceof Table || $table instanceof TableAlias) {
+            return $table;
         } else {
-            throw new \InvalidArgumentException('Expected instance of "'.FieldOrTable::class.'"!');
+            throw new \InvalidArgumentException('Expected instance of "' . Table::class . '" or "' . TableAlias::class . '"!');
         }
     }
 }

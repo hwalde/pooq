@@ -13,9 +13,10 @@ class AliasedColumnField extends AbstractColumnField implements FieldOrTable
     /** @var string */
     private $columnAliasName;
 
-    public function __construct(string $tableName, string $columnName, string $columnAliasName, ?string $tableAliasName = null)
+    public function __construct(string $fieldName, string $modelName, string $tableName, string $columnName,
+                                string $columnAliasName, ?string $tableAliasName = null)
     {
-        parent::__construct($tableName, $columnName, $tableAliasName);
+        parent::__construct($fieldName, $modelName, $tableName, $columnName, $tableAliasName);
         $this->columnAliasName = $columnAliasName;
     }
 
@@ -24,7 +25,7 @@ class AliasedColumnField extends AbstractColumnField implements FieldOrTable
         return $this->columnAliasName;
     }
 
-    public function getFieldName(): string
+    public function getSqlName(): string
     {
         return $this->getColumnAliasName();
     }

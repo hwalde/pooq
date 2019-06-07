@@ -14,16 +14,19 @@ use POOQ\CodeGeneration\CodeGenerator;
 
 $nameMap = CodeGenerator::$currentConfig->getNameMap();
 
+$modelName = $nameMap[$table->getName()] ?? $table->getName();
+$modelName = strtoupper($modelName[0]).substr($modelName, 1);
+
 include_once __DIR__.'/inc/get-mapped-name-function.inc.php';
 
 if(!function_exists('PHPFile__POOQ__aliasMethods')) {
-    function PHPFile__POOQ__aliasMethods(string $tableName, \Database2Code\Struct\Column $column, \Database2Code\Output\OutputConfig $config, array $nameMap)
+    function PHPFile__POOQ__aliasMethods(string $modelName, string $tableName, \Database2Code\Struct\Column $column, \Database2Code\Output\OutputConfig $config, array $nameMap)
     {
         $name = PHPFile__POOQ__getMappedName($column, $nameMap);
         return <<<END
     public function {$name}() : ColumnField
     {
-        return new ColumnField('$tableName', '{$column->getName()}', \$this->getAliasName());
+        return new ColumnField('$name', '$modelName', '$tableName', '{$column->getName()}', \$this->getAliasName());
     }
 END;
     }
@@ -32,7 +35,7 @@ END;
 $functionCallList = [];
 $methods = '';
 foreach ($table->getColumns() as $column) {
-    $methods .= PHPFile__POOQ__aliasMethods($table->getName(), $column, $config, $nameMap).PHP_EOL;
+    $methods .= PHPFile__POOQ__aliasMethods($modelName, $table->getName(), $column, $config, $nameMap).PHP_EOL;
     $functionCallList[] = "\$this->".PHPFile__POOQ__getMappedName($column, $nameMap)."()";
 }
 $functionCalls = implode(",\n\t\t\t", $functionCallList);
@@ -45,14 +48,12 @@ if($config->hasNamespace()) {
 
 $additionalMethods = include __DIR__.'/inc/additional-methods.inc.php';
 
-$name = $nameMap[$table->getName()] ?? $table->getName();
-$name = strtoupper($name[0]).substr($name, 1);
 
 $targetNamespaceMap = CodeGenerator::$currentConfig->getModelName2NamespaceMap();
 $useStatements = '';
-if(isset($targetNamespaceMap[$name])) {
-    $targetNamespace = $targetNamespaceMap[$name]->getName();
-    $useStatements .= "use ".$targetNamespace."\\".$name."Record;\n";
+if(isset($targetNamespaceMap[$modelName])) {
+    $targetNamespace = $targetNamespaceMap[$modelName]->getName();
+    $useStatements .= "use ".$targetNamespace."\\".$modelName."Record;\n";
     /*$useStatements .= "use ".$targetNamespace."\\".$name."List;\n";
     $useStatements .= "use ".$targetNamespace."\\".$name."Repository;\n";*/
 }
@@ -67,7 +68,7 @@ use POOQ\TableAlias;
 use POOQ\ColumnField;
 use POOQ\ColumnFieldList;
 $useStatements
-class {$name}Alias extends TableAlias {
+class {$modelName}Alias extends TableAlias {
    
 $methods
 $additionalMethods
@@ -84,9 +85,9 @@ $additionalMethods
     
     /** @noinspection PhpHierarchyChecksInspection */
     /** @noinspection PhpSignatureMismatchDuringInheritanceInspection */
-    public function __getRecordClass() : {$name}Record
+    public function __getRecordClass() : {$modelName}Record
     {
-        return new {$name}Record();
+        return new {$modelName}Record();
     }
 }
 END;

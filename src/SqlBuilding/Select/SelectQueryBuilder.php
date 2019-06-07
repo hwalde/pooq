@@ -144,7 +144,7 @@ class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMain
 
     public function fetchOne() : string
     {
-        $result = Database()->selectOne($this->getSql());
+        $result = Database()->selectOne($this->toSql());
         if($result === false) {
             throw new MissingResultException('The query returned no result. fetchOne()-method expects at least one row with at least one column.');
         }
@@ -170,7 +170,7 @@ class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMain
         return $list;
     }
 
-    public function getSql(): string
+    public function toSql(): string
     {
         return $this->sql;
     }

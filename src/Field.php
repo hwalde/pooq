@@ -12,7 +12,7 @@ use POOQ\Field\Functions\String\LengthFunction;
 
 abstract class Field extends FieldOrValue implements FieldOrTable
 {
-    public abstract function getFieldName(): string;
+    public abstract function getSqlName(): string;
 
     public function asc() : Order
     {

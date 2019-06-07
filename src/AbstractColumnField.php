@@ -11,6 +11,12 @@ namespace POOQ;
 abstract class AbstractColumnField extends Field implements FieldOrTable
 {
     /** @var string */
+    private $fieldName;
+
+    /** @var string */
+    private $modelName;
+
+    /** @var string */
     private $tableName;
 
     /** @var string|null */
@@ -19,11 +25,24 @@ abstract class AbstractColumnField extends Field implements FieldOrTable
     /** @var string */
     private $columnName;
 
-    public function __construct(string $tableName, string $columnName, ?string $tableAliasName = null)
+    public function __construct(string $fieldName, string $modelName, string $tableName,
+                                string $columnName, ?string $tableAliasName = null)
     {
+        $this->fieldName = $fieldName;
+        $this->modelName = $modelName;
         $this->tableName = $tableName;
         $this->tableAliasName = $tableAliasName;
         $this->columnName = $columnName;
+    }
+
+    public function getFieldName(): string
+    {
+        return $this->fieldName;
+    }
+
+    public function getModelName(): string
+    {
+        return $this->modelName;
     }
 
     public function getTableName(): string

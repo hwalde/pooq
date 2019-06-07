@@ -31,7 +31,7 @@ if(!function_exists('PHPFile__record__getColumnProperty')) {
         return <<<END
     
     /** @var \${$name} $phpType */
-    private \${$name};
+    protected \${$name};
 END;
     }
 }
@@ -128,13 +128,38 @@ if(isset($targetNamespaceMap[$name])) {
 $constants = '';
 $copyright = CodeGenerator::$currentConfig->getCopyrightInformation();
 
+if($table->containsPrimaryKey()) {
+    $extends = ' extends AbstractUpdateableRecord';
+    $implements = ' implements UpdateableRecord';
+
+    // __listPrimaryKeyColumns-method:
+    $quotedPrimaryKeyColumnList = [];
+    foreach ($table->getPrimaryKeyColumnList() as $primaryKeyColumn) {
+        $quotedPrimaryKeyColumnList[] = '\''.$primaryKeyColumn->getName().'\'';
+    }
+    $primaryKeyColumnsAsString = implode(', ', $quotedPrimaryKeyColumnList);
+    $methods .= <<<END
+    /**
+     * @return string[]
+     */
+    protected function __listPrimaryKeyColumns(): array;
+    {
+        return [$primaryKeyColumnsAsString];
+    }
+END;
+
+} else {
+    $extends = '';
+    $implements = ' implements Record';
+}
+
 return <<<END
 <?php
 $copyright
 $namespace
 use POOQ\Record;
 $useStatements
-class Generated{$name}Record implements Record {
+class Generated{$name}Record$extends$implements {
 $constants$properties$methods
     
     /** @noinspection PhpHierarchyChecksInspection */

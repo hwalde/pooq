@@ -15,7 +15,7 @@ class ColumnField extends AbstractColumnField
         return new AliasedColumnField($this->getTableName(), $this->getColumnName(), $aliasName, $this->getTableAliasName());
     }
 
-    public function getFieldName(): string
+    public function getSqlName(): string
     {
         return $this->getColumnName();
     }

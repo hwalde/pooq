@@ -22,13 +22,13 @@ class ValueField extends Field implements FieldOrTable
         $this->value = $value;
     }
 
-    public function getFieldName(): string
+    public function getSqlName(): string
     {
         return $this->name;
     }
 
     public function toSql(): string
     {
-        return Database()->quote($this->value).' AS '.Database()->quoteIdentifier($this->getFieldName());
+        return Database()->quote($this->value).' AS '.Database()->quoteIdentifier($this->getSqlName());
     }
 }

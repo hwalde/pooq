@@ -6,16 +6,9 @@
  *
  * For the full copyright and license information, read the LICENSE file that was distributed with this source code.
  */
-namespace POOQ\SqlBuilding\Update;
+namespace POOQ\Exception;
 
-use POOQ\AbstractColumnField;
-
-interface UpdateEndPart
+class NotConnectedToDatabaseException extends \Exception
 {
-    public function toSql() : string;
 
-    /**
-     * @return int the number of updated rows
-     */
-    public function execute() : int;
 }

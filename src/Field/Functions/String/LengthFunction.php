@@ -22,13 +22,13 @@ class LengthFunction extends FunctionField implements StringFunction
         $this->subject = $subject;
     }
 
-    public function getFieldName(): string
+    public function getSqlName(): string
     {
         return 'length';
     }
 
     public function toSql(): string
     {
-        return 'length('.Database()->quoteIdentifier($this->subject->getFieldName()).')';
+        return 'length('.Database()->quoteIdentifier($this->subject->getSqlName()).')';
     }
 }

@@ -6,16 +6,16 @@
  *
  * For the full copyright and license information, read the LICENSE file that was distributed with this source code.
  */
-namespace POOQ\SqlBuilding\Update;
+namespace POOQ\SqlBuilding\Insert;
 
 use POOQ\AbstractColumnField;
 
-interface UpdateEndPart
+interface InsertSetPart
 {
-    public function toSql() : string;
-
     /**
-     * @return int the number of updated rows
+     * @param AbstractColumnField $field
+     * @param string|int|float|bool|double $value
+     * @return InsertAfterSetPart
      */
-    public function execute() : int;
+    public function set(AbstractColumnField $field, $value): InsertAfterSetPart;
 }

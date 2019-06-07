@@ -32,7 +32,7 @@ class SelectFieldList extends AbstractList
             if ($field instanceof ColumnField) {
                 continue;
             }
-            $name = $field->getFieldName();
+            $name = $field->getSqlName();
             if(isset($nameToUsageCountMap[$name])) {
                 throw new \InvalidArgumentException('There is more than one field with the name"'.$name.'"!');
             }

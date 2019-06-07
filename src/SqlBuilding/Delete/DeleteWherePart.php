@@ -6,16 +6,15 @@
  *
  * For the full copyright and license information, read the LICENSE file that was distributed with this source code.
  */
-namespace POOQ\SqlBuilding\Update;
+namespace POOQ\SqlBuilding\Delete;
 
-use POOQ\AbstractColumnField;
+use POOQ\Condition;
 
-interface UpdateEndPart
+interface DeleteWherePart
 {
-    public function toSql() : string;
-
     /**
-     * @return int the number of updated rows
+     * @param Condition $condition
+     * @return DeleteEndPart
      */
-    public function execute() : int;
+    public function where(Condition $condition) : DeleteEndPart;
 }
