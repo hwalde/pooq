@@ -16,6 +16,11 @@ class MissingPrimaryKeyValueException extends \Exception
         string $fieldName
     ) {
         $message = $messagePrefix.' '.$recordClassName.' is missing value for field "'.$fieldName.'"';
+        $message .= 'This error message appears as well if the foreignKey columns weren\'t loaded from the database';
+        $message .= 'Setting the foreignKey columns directly using the '.$recordClassName.'->set'.
+            strtoupper($fieldName[0]).substr($fieldName, 1).' is not permitted!';
+        $message .= 'In case you want to forcefully set them use Reflection to access the RecordValue object ';
+        $message .= 'directly in the same way as the RecordMapper does.';
         parent::__construct($message);
     }
 }

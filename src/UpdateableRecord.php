@@ -20,5 +20,8 @@ interface UpdateableRecord extends Record
      */
     public function store(): ?int;
 
+    /**
+     * deletes this record in the database
+     */
     public function delete(): int;
 }

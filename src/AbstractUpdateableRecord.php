@@ -10,17 +10,10 @@ namespace POOQ;
 
 use POOQ\Exception\MissingPrimaryKeyValueException;
 use POOQ\Exception\NotConnectedToDatabaseException;
+use POOQ\SqlBuilding\Select\SelectFromPart;
 
 abstract class AbstractUpdateableRecord implements UpdateableRecord
 {
-    /** @var bool */
-    private $existsInDatabase;
-
-    public function __construct(bool $existsInDatabase = false)
-    {
-        $this->existsInDatabase = $existsInDatabase;
-    }
-
     /**
      * insert or update the record to the database
      */
@@ -28,78 +21,10 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
     {
         $this->validatePrimaryKeyValuesExist('store');
 
-        if($this->existsInDatabase) {
+        if($this->existsInDatabase()) {
             return $this->updateRecord();
         } else {
             return $this->insertRecord();
-        }
-    }
-
-    private function updateRecord(): ?int
-    {
-        $updateQuery = update($this->__getModel());
-
-        $nameMap = $this->__getModel()->__getColumn2NameMap();
-
-        // todo: get only changed fields
-        $hasChangedFields = false;
-        foreach ($this->__getModel()->__getFieldList() as $columnField) {
-            $fieldName = $nameMap[$columnField->getColumnName()];
-            $value = $this->$fieldName;
-            $updateQuery = $updateQuery->set($columnField, $value);
-            $hasChangedFields = true;
-        }
-
-        if($hasChangedFields) {
-            return $updateQuery->where($this->getSqlWhereCondition())
-                ->execute();
-        }
-    }
-
-    private function insertRecord(): int
-    {
-        // todo: check that required fields are set
-
-        $insertQuery = insertInto($this->__getModel());
-
-        $nameMap = $this->__getModel()->__getColumn2NameMap();
-
-        foreach ($this->__getModel()->__getFieldList() as $columnField) {
-            $fieldName = $nameMap[$columnField->getColumnName()];
-            $value = $this->$fieldName;
-            $insertQuery = $insertQuery->set($columnField, $value);
-        }
-
-        $id = $insertQuery->execute();
-
-        if(count($this->__getModel()->__listPrimaryKeyColumns())==1) {
-            $pkColumnName = $this->__getModel()->__listPrimaryKeyColumns()[0];
-            $pkFieldName = $nameMap[$pkColumnName];
-            $this->$pkFieldName = $id;
-        } else {
-            $this->refresh(); // to update pk
-        }
-
-        return $id;
-    }
-
-    public function refresh(): void
-    {
-        if(!$this->existsInDatabase) {
-            throw new NotConnectedToDatabaseException('This record was not loaded from database and therefor cannot be refreshed!');
-        }
-
-        $this->validatePrimaryKeyValuesExist('refresh');
-
-        // todo: refresh only fields that are set in resultset? And what about null values?
-        $result = select($this->__getModel())
-            ->from($this->__getModel())
-            ->where($this->getSqlWhereCondition())
-            ->fetch();
-        foreach ($this->__getModel()->__getFieldList() as $columnField) {
-            $value = $result->getByField($columnField);
-            $fieldName = $this->__getModel()->__getColumn2NameMap()[$columnField->getColumnName()];
-            $this->$fieldName = $value;
         }
     }
 
@@ -112,10 +37,49 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
         foreach ($this->__getModel()->__listPrimaryKeyColumns() as $columnName) {
             $recordClassName = get_class($this);
             $fieldName = $this->__getModel()->__getColumn2NameMap()[$columnName];
-            if($this->$fieldName === null) {
+            if(!$this->{$fieldName}->hasBeenLoadedFromDatabase()) {
                 $prefix = 'Cannot '.$actionName.' '.$recordClassName;
                 throw new MissingPrimaryKeyValueException($prefix, $recordClassName, $fieldName);
             }
+        }
+    }
+
+    private function existsInDatabase() : bool
+    {
+        foreach ($this->__getModel()->__getFieldList() as $columnField) {
+            $fieldName = $this->__getModel()->__getColumn2NameMap()[$columnField->getColumnName()];
+            /** @var RecordValue $recordValueObject */
+            $recordValueObject = $this->{$fieldName};
+            if($recordValueObject->hasBeenLoadedFromDatabase()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function updateRecord(): ?int
+    {
+        $updateQuery = update($this->__getModel());
+
+        $nameMap = $this->__getModel()->__getColumn2NameMap();
+
+        $hasChangedFields = false;
+        foreach ($this->__getModel()->__getFieldList() as $columnField) {
+            $fieldName = $nameMap[$columnField->getColumnName()];
+
+            /** @var RecordValue $recordValueObject */
+            $recordValueObject = $this->{$fieldName};
+            if(!$recordValueObject->isChanged()) {
+                continue;
+            }
+
+            $updateQuery = $updateQuery->set($columnField, $recordValueObject->getValue());
+            $hasChangedFields = true;
+        }
+
+        if($hasChangedFields) {
+            return $updateQuery->where($this->getSqlWhereCondition())
+                ->execute();
         }
     }
 
@@ -130,7 +94,7 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
         $condition = null;
         foreach ($this->__getModel()->__listPrimaryKeyColumns() as $columnName) {
             $fieldName = $nameMap[$columnName];
-            $value = $this->$fieldName;
+            $value = $this->{$fieldName}->getOriginalValue();
             /** @var Field $field */
             $field = $this->__getModel()->$fieldName();
             $newCondition = $field->eq(value($value));
@@ -143,9 +107,80 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
         return $condition;
     }
 
+    private function insertRecord(): int
+    {
+        // todo: check that required fields are set (SQL NOT NULL & NO DEFAULT VALUE COLUMNS)
+
+        $insertQuery = insertInto($this->__getModel());
+
+        $nameMap = $this->__getModel()->__getColumn2NameMap();
+
+        foreach ($this->__getModel()->__getFieldList() as $columnField) {
+            $fieldName = $nameMap[$columnField->getColumnName()];
+            $value = $this->{$fieldName};
+            $insertQuery = $insertQuery->set($columnField, $value);
+        }
+
+        $id = $insertQuery->execute();
+
+        if(count($this->__getModel()->__listPrimaryKeyColumns())==1) {
+            $pkColumnName = $this->__getModel()->__listPrimaryKeyColumns()[0];
+            $pkFieldName = $nameMap[$pkColumnName];
+            $this->setFieldValueAsLoadedFromDatabase($this->{$pkFieldName}, $id, $pkFieldName);
+        }
+
+        return $id;
+    }
+
+    /**
+     * @param ColumnField $columnField
+     * @param $value
+     * @param $fieldName
+     */
+    private function setFieldValueAsLoadedFromDatabase(ColumnField $columnField, $value, $fieldName): void
+    {
+        $updatedValue = RecordValueTypeConverter::convertSqlValueToPHP($this->__getModel(), $columnField, $value);
+        $this->{$fieldName}->setOriginalValue($updatedValue);
+        $this->{$fieldName}->setValue($updatedValue);
+        $this->{$fieldName}->setChanged(false);
+        $this->{$fieldName}->setHasBeenLoadedFromDatabase(true);
+    }
+
+    public function refresh(): void
+    {
+        if(!$this->existsInDatabase()) {
+            throw new NotConnectedToDatabaseException('This record was not loaded from database and therefor cannot be refreshed!');
+        }
+
+        $this->validatePrimaryKeyValuesExist('refresh');
+
+        $fieldList = [];
+        foreach ($this->__getModel()->__getFieldList() as $columnField) {
+            $fieldName = $this->__getModel()->__getColumn2NameMap()[$columnField->getColumnName()];
+            /** @var RecordValue $recordValueObject */
+            $recordValueObject = $this->{$fieldName};
+            if($recordValueObject->hasBeenSet()) {
+                $fieldList[] = $columnField;
+            }
+        }
+
+        /** @var SelectFromPart $select */
+        $select = call_user_func_array('\POOQ\select', $fieldList);
+
+        $result = $select
+            ->from($this->__getModel())
+            ->where($this->getSqlWhereCondition())
+            ->fetch();
+        foreach ($this->__getModel()->__getFieldList() as $columnField) {
+            $value = $result->getByField($columnField);
+            $fieldName = $this->__getModel()->__getColumn2NameMap()[$columnField->getColumnName()];
+            $this->setFieldValueAsLoadedFromDatabase($columnField, $value, $fieldName);
+        }
+    }
+
     public function delete(): int
     {
-        if(!$this->existsInDatabase) {
+        if(!$this->existsInDatabase()) {
             throw new NotConnectedToDatabaseException('This record was not loaded from database and therefor cannot be deleted!');
         }
 

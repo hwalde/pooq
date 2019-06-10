@@ -51,6 +51,8 @@ class UpdateQueryBuilder implements UpdateSetPart, UpdateWherePart, UpdateEndPar
         $this->sql .= Database()->quoteIdentifier($field->getColumnName()).' = ';
         if($value === null) {
             $this->sql .= 'NULL';
+        } else if ($value instanceof \DateTime) {
+            $this->sql .= Database()->quote($value->getTimestamp());
         } else if($value instanceof SelectEndPart) {
             $this->sql .= '('.$value->toSql().')';
         } else {

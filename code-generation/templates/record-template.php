@@ -20,6 +20,7 @@ if(!function_exists('PHPFile__record__getColumnProperty')) {
     function PHPFile__record__getColumnProperty(\Database2Code\Struct\Column $column, array $nameMap)
     {
         $name = PHPFile__POOQ__getMappedName($column, $nameMap);
+        /*
         if($column->getType() instanceof \Database2Code\Struct\ColumnType\UnknownColumnType) {
             $phpType = 'mixed';
         } else {
@@ -28,9 +29,10 @@ if(!function_exists('PHPFile__record__getColumnProperty')) {
         if($column->isNullable()) {
             $phpType .= '|null';
         }
+        */
         return <<<END
     
-    /** @var \${$name} $phpType */
+    /** @var \${$name} RecordValue */
     protected \${$name};
 END;
     }
@@ -81,17 +83,18 @@ END;
     
     public function has{$upperCaseName}(): bool
     {
-        return isset(\$this->$name);
+        return \$this->{$name}->hasBeenSet();
     }    
 $getterPHPDoc
     public function get{$upperCaseName}()$returnTypeDef
     {
-        return \$this->$name;
+        return \$this->{$name}->getValue();
     }
 $setterPHPDoc
     public function set{$upperCaseName}($argumentTypeDef\$$name)
     {
-        \$this->$name = \$$name;
+        \$this->{$name}->setChanged(true);
+        \$this->{$name}->setValue(\$$name);
     }
 END;
     }
@@ -105,6 +108,13 @@ foreach ($table->getColumns() as $column) {
 $methods = '';
 foreach ($table->getColumns() as $column) {
     $methods .= PHPFile__record__getColumnMethods($column, $config, $nameMap).PHP_EOL;
+}
+
+
+$constructorAssignments = '';
+foreach ($table->getColumns() as $column) {
+    $fieldName = PHPFile__POOQ__getMappedName($column, $nameMap);
+    $constructorAssignments .= "\t\t\$this->{$fieldName} = new RecordValue();\n";
 }
 
 if($config->hasNamespace()) {
@@ -128,6 +138,7 @@ if(isset($targetNamespaceMap[$name])) {
 $constants = '';
 $copyright = CodeGenerator::$currentConfig->getCopyrightInformation();
 
+$useStatements .= "use POOQ\\RecordValue;\n";
 if($table->containsPrimaryKey()) {
     $useStatements .= "use POOQ\\AbstractUpdateableRecord;\n";
     $useStatements .= "use POOQ\\UpdateableRecord;\n";
@@ -145,8 +156,10 @@ $copyright
 $namespace
 $useStatements
 class Generated{$name}Record$extends$implements {
-$constants$properties$methods
-    
+$constants$properties
+    public function __construct() {
+$constructorAssignments    }
+$methods    
     /** @noinspection PhpHierarchyChecksInspection */
     /** @noinspection PhpSignatureMismatchDuringInheritanceInspection */
     public function __getModel(): {$name}
