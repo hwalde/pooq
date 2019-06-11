@@ -19,8 +19,6 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
      */
     public function store(): ?int
     {
-        $this->validatePrimaryKeyValuesExist('store');
-
         if($this->existsInDatabase()) {
             return $this->updateRecord();
         } else {
@@ -37,7 +35,9 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
         foreach ($this->__getModel()->__listPrimaryKeyColumns() as $columnName) {
             $recordClassName = get_class($this);
             $fieldName = $this->__getModel()->__getColumn2NameMap()[$columnName];
-            if(!$this->{$fieldName}->hasBeenLoadedFromDatabase()) {
+            /** @var RecordValue $recordValueObject */
+            $recordValueObject = $this->{$fieldName};
+            if(!$recordValueObject->hasBeenLoadedFromDatabase()) {
                 $prefix = 'Cannot '.$actionName.' '.$recordClassName;
                 throw new MissingPrimaryKeyValueException($prefix, $recordClassName, $fieldName);
             }
@@ -59,6 +59,8 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
 
     private function updateRecord(): ?int
     {
+        $this->validatePrimaryKeyValuesExist('store');
+
         $updateQuery = update($this->__getModel());
 
         $nameMap = $this->__getModel()->__getColumn2NameMap();

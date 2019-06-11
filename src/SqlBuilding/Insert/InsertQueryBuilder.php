@@ -37,6 +37,7 @@ class InsertQueryBuilder implements InsertSetPart, InsertAfterSetPart
         $this->index = 0;
         $this->rows[$this->index] = new FieldValuePairList();
         $this->table = $this->generateTableObject($table);
+        return $this;
     }
 
     public function set(AbstractColumnField $field, $value): InsertAfterSetPart
@@ -110,7 +111,7 @@ class InsertQueryBuilder implements InsertSetPart, InsertAfterSetPart
             $sqlRows[] = '(' . implode(', ', $quotedValueList) . ')';
         }
 
-        return implode(', ', $sqlRows).';';
+        return $sql.implode(', ', $sqlRows).';';
     }
 
     public function execute(): int
