@@ -17,7 +17,7 @@ class POOQ
         self::$pdo = $pdo;
     }
 
-    public static function initilize(string $databaseName, string $databaseUsername, string $databasePassword,
+    public static function initialize(string $databaseName, string $databaseUsername, string $databasePassword,
                                      string $databaseHostname, int $databasePort = 3306, ?string $charset = 'utf8') {
         $databaseHostname .= ':'.$databasePort;
         $charset = isset($charset) ? ';charset='.$charset : '';

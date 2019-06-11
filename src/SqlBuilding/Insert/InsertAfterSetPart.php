@@ -17,5 +17,10 @@ interface InsertAfterSetPart extends InsertSetPart
     /**
      * @return int the number of inserted rows
      */
-    public function execute() : int;
+    public function executeAndCountAffectedRows() : int;
+
+    /**
+     * @return the last insert id
+     */
+    public function execute() : string;
 }

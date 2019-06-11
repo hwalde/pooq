@@ -212,11 +212,22 @@ class Database {
         }
     }
 
-    public function executeAndCountAffectedRows(string $sql, array $bindValues = []) {
+    public function executeAndCountAffectedRows(string $sql, array $bindValues = []) : int
+    {
         $statement = $this->pdo->prepare($sql);
         $this->bindValues($statement, $bindValues);
+        $statement->execute();
         $rowCount = $statement->rowCount();
         $statement->closeCursor();
         return $rowCount;
+    }
+
+    public function executeAndGetLastInsertId(string $sql, array $bindValues = []) : string
+    {
+        $statement = $this->pdo->prepare($sql);
+        $this->bindValues($statement, $bindValues);
+        $statement->execute();
+        $statement->closeCursor();
+        return $this->pdo->lastInsertId();
     }
 }

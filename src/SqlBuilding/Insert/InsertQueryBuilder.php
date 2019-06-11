@@ -114,8 +114,13 @@ class InsertQueryBuilder implements InsertSetPart, InsertAfterSetPart
         return $sql.implode(', ', $sqlRows).';';
     }
 
-    public function execute(): int
+    public function executeAndCountAffectedRows(): int
     {
         return Database()->executeAndCountAffectedRows($this->toSql());
+    }
+
+    public function execute(): string
+    {
+        return Database()->executeAndGetLastInsertId($this->toSql());
     }
 }

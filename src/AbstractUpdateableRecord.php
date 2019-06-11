@@ -109,7 +109,7 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
         return $condition;
     }
 
-    private function insertRecord(): int
+    private function insertRecord(): string
     {
         // todo: check that required fields are set (SQL NOT NULL & NO DEFAULT VALUE COLUMNS)
 
@@ -119,8 +119,12 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
 
         foreach ($this->__getModel()->__getFieldList() as $columnField) {
             $fieldName = $nameMap[$columnField->getColumnName()];
-            $value = $this->{$fieldName};
-            $insertQuery = $insertQuery->set($columnField, $value);
+
+            /** @var RecordValue $recordValueObject */
+            $recordValueObject = $this->{$fieldName};
+            if($recordValueObject->hasBeenSet()) {
+                $insertQuery = $insertQuery->set($columnField, $recordValueObject->getValue());
+            }
         }
 
         $id = $insertQuery->execute();
@@ -128,7 +132,8 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
         if(count($this->__getModel()->__listPrimaryKeyColumns())==1) {
             $pkColumnName = $this->__getModel()->__listPrimaryKeyColumns()[0];
             $pkFieldName = $nameMap[$pkColumnName];
-            $this->setFieldValueAsLoadedFromDatabase($this->{$pkFieldName}, $id, $pkFieldName);
+            $pkField = $this->__getModel()->{$pkFieldName}();
+            $this->setFieldValueAsLoadedFromDatabase($pkField, $id, $pkFieldName);
         }
 
         return $id;
