@@ -1,7 +1,6 @@
-# POOQ
+# POOQ - **P**HP **O**bject **O**riented **Q**uerying
 
 POOQ generates PHP code from your database and lets you build type safe SQL queries through its fluent API. 
-
 
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.3-8892BF.svg?style=flat-square)](https://php.net/)
 <br><br>
