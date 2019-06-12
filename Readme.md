@@ -1,4 +1,4 @@
-# POOQ - **P**HP **O**bject **O**riented **Q**uerying
+# POOQ - PHP Object Oriented Querying
 
 POOQ generates PHP code from your database and lets you build type safe SQL queries through its fluent API. 
 
