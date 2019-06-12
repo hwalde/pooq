@@ -52,7 +52,7 @@ class UpdateQueryBuilder implements UpdateSetPart, UpdateWherePart, UpdateEndPar
         if($value === null) {
             $this->sql .= 'NULL';
         } else if ($value instanceof \DateTime) {
-            $this->sql .= Database()->quote($value->getTimestamp());
+            $this->sql .= Database()->quote($value->format('Y-m-d H:i:s'));
         } else if($value instanceof SelectEndPart) {
             $this->sql .= '('.$value->toSql().')';
         } else {

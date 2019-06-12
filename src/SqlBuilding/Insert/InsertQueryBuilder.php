@@ -103,7 +103,7 @@ class InsertQueryBuilder implements InsertSetPart, InsertAfterSetPart
                 if ($value === null) {
                     $quotedValueList[] = 'NULL';
                 } else if ($value instanceof \DateTime) {
-                    $quotedValueList[] = Database()->quote($value->getTimestamp());
+                    $quotedValueList[] = Database()->quote($value->format('Y-m-d H:i:s'));
                 } else {
                     $quotedValueList[] = Database()->quote($value);
                 }
