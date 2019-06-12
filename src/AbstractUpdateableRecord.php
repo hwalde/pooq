@@ -16,6 +16,7 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
 {
     /**
      * insert or update the record to the database
+     * @return int The number of affected rows
      */
     public function store(): ?int
     {
@@ -57,7 +58,7 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
         return false;
     }
 
-    private function updateRecord(): ?int
+    private function updateRecord(): int
     {
         $this->validatePrimaryKeyValuesExist('store');
 
@@ -79,10 +80,12 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
             $hasChangedFields = true;
         }
 
-        if($hasChangedFields) {
-            return $updateQuery->where($this->getSqlWhereCondition())
-                ->execute();
+        if(!$hasChangedFields) {
+            return 0;
         }
+
+        return $updateQuery->where($this->getSqlWhereCondition())
+            ->execute();
     }
 
     /**
@@ -109,7 +112,7 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
         return $condition;
     }
 
-    private function insertRecord(): string
+    private function insertRecord(): int
     {
         // todo: check that required fields are set (SQL NOT NULL & NO DEFAULT VALUE COLUMNS)
 
@@ -127,16 +130,16 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
             }
         }
 
-        $id = $insertQuery->execute();
+        $result = $insertQuery->execute();
 
         if(count($this->__getModel()->__listPrimaryKeyColumns())==1) {
             $pkColumnName = $this->__getModel()->__listPrimaryKeyColumns()[0];
             $pkFieldName = $nameMap[$pkColumnName];
             $pkField = $this->__getModel()->{$pkFieldName}();
-            $this->setFieldValueAsLoadedFromDatabase($pkField, $id, $pkFieldName);
+            $this->setFieldValueAsLoadedFromDatabase($pkField, $result->getLastInsertId(), $pkFieldName);
         }
 
-        return $id;
+        return $result->getAffectedRowsCount();
     }
 
     /**

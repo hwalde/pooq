@@ -8,19 +8,13 @@
  */
 namespace POOQ\SqlBuilding\Insert;
 
+use POOQ\DatabaseExecuteResult;
+
 interface InsertAfterSetPart extends InsertSetPart
 {
     public function newRecord() : InsertSetPart;
 
     public function toSql() : string;
 
-    /**
-     * @return int the number of inserted rows
-     */
-    public function executeAndCountAffectedRows() : int;
-
-    /**
-     * @return the last insert id
-     */
-    public function execute() : string;
+    public function execute() : DatabaseExecuteResult;
 }

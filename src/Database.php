@@ -212,6 +212,18 @@ class Database {
         }
     }
 
+    public function execute(string $sql, array $bindValues = []) : DatabaseExecuteResult
+    {
+        $result = new DatabaseExecuteResult();
+        $statement = $this->pdo->prepare($sql);
+        $this->bindValues($statement, $bindValues);
+        $statement->execute();
+        $result->setAffectedRowsCount($statement->rowCount());
+        $result->setLastInsertId($this->pdo->lastInsertId());
+        $statement->closeCursor();
+        return $result;
+    }
+
     public function executeAndCountAffectedRows(string $sql, array $bindValues = []) : int
     {
         $statement = $this->pdo->prepare($sql);
@@ -220,14 +232,5 @@ class Database {
         $rowCount = $statement->rowCount();
         $statement->closeCursor();
         return $rowCount;
-    }
-
-    public function executeAndGetLastInsertId(string $sql, array $bindValues = []) : string
-    {
-        $statement = $this->pdo->prepare($sql);
-        $this->bindValues($statement, $bindValues);
-        $statement->execute();
-        $statement->closeCursor();
-        return $this->pdo->lastInsertId();
     }
 }

@@ -10,6 +10,7 @@ namespace POOQ\SqlBuilding\Insert;
 
 use POOQ\AbstractColumnField;
 use function POOQ\Database;
+use POOQ\DatabaseExecuteResult;
 use POOQ\SqlBuilding\SqlBuildingHelperTrait;
 use POOQ\Table;
 use POOQ\TableAlias;
@@ -114,13 +115,8 @@ class InsertQueryBuilder implements InsertSetPart, InsertAfterSetPart
         return $sql.implode(', ', $sqlRows).';';
     }
 
-    public function executeAndCountAffectedRows(): int
+    public function execute(): DatabaseExecuteResult
     {
-        return Database()->executeAndCountAffectedRows($this->toSql());
-    }
-
-    public function execute(): string
-    {
-        return Database()->executeAndGetLastInsertId($this->toSql());
+        return Database()->execute($this->toSql());
     }
 }
