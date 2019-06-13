@@ -2,6 +2,16 @@ Future releases:
 - Clean up namespaces
     - Move field related classes to Field-namespace
 - Add code-generation for intoTableXY-methods of Result and ResultList
-- Add insert/update/delete
-- Support further SQL features like Group By and Window Functions
-- Make sure aliased fields cannot be used in orderBy/where/.. unless they were declared in select
+- Add option to configure the Namespace of the generated classes
+- Support more complicates insert/update Statements
+- Support insert-values Syntax like INSERT ON DUPLICATE KEY UPDATE
+- Support replace
+- Support Group By
+- Support Window Functions
+- Make sure aliased fields cannot be used in orderBy/where/.. unless they were declared in select/join
+- Document Delete-syntax
+- Document Insert-syntax
+- Document CRUD-ability
+- Create pooq website
+     pooq-project.org? pooq.rocks?
+- Plural/Singular Naming Problem with Tables Models. (If table is in plural then model should still be singular.)
