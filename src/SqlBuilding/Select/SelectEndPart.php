@@ -17,6 +17,9 @@ interface SelectEndPart
 
     public function fetchOne() : string;
 
+    /**
+     * @return ResultList|Result[]
+     */
     public function fetchAll() : ResultList;
 
     public function toSql() : string;

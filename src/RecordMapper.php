@@ -48,13 +48,13 @@ class RecordMapper
         $property->setAccessible(true);
 
         /** @var RecordValue $recordValueObject */
-        $recordValueObject = $property->getValue();
+        $recordValueObject = $property->getValue($recordClass);
         $recordValueObject->setHasBeenLoadedFromDatabase(true);
 
         $updatedValue = RecordValueTypeConverter::convertSqlValueToPHP($this->table, $field, $value);
         $recordValueObject->setValue($updatedValue);
         $recordValueObject->setOriginalValue($updatedValue);
 
-        $property->setValue($recordValueObject);
+        $property->setValue($recordClass, $recordValueObject);
     }
 }

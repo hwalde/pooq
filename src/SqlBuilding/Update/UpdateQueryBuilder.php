@@ -44,10 +44,11 @@ class UpdateQueryBuilder implements UpdateSetPart, UpdateWherePart, UpdateEndPar
      */
     public function set(AbstractColumnField $field, $value): UpdateWherePart
     {
-        if(!$this->hasSetBeenCalled) {
+        if($this->hasSetBeenCalled) {
             $this->sql .= ', ';
-            $this->hasSetBeenCalled = true;
         }
+        $this->hasSetBeenCalled = true;
+
         $this->sql .= Database()->quoteIdentifier($field->getColumnName()).' = ';
         if($value === null) {
             $this->sql .= 'NULL';
