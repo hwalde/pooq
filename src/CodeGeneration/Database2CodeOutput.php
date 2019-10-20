@@ -6,13 +6,15 @@
  *
  * For the full copyright and license information, read the LICENSE file that was distributed with this source code.
  */
+
 namespace POOQ\CodeGeneration;
 
 use Database2Code\Output\Output;
 use Database2Code\Output\OutputConfig;
 use Database2Code\Output\PHPFile\PHPFileGenerator;
 
-class Database2CodeOutput implements Output{
+class Database2CodeOutput implements Output
+{
     /** @var OutputConfig */
     private $outputConfig;
 
@@ -39,34 +41,35 @@ class Database2CodeOutput implements Output{
         $this->outputConfig = $outputConfig;
         $this->codeGeneratorConfig = CodeGenerator::$currentConfig;
 
-        $modelTemplateFilePath = $templateFolderPath.DIRECTORY_SEPARATOR.'model-template.php';
+        $modelTemplateFilePath = $templateFolderPath . DIRECTORY_SEPARATOR . 'model-template.php';
         $this->modelGenerator = new PHPFileGenerator($modelTemplateFilePath);
 
-        $aliasTemplateFilePath = $templateFolderPath.DIRECTORY_SEPARATOR.'alias-template.php';
+        $aliasTemplateFilePath = $templateFolderPath . DIRECTORY_SEPARATOR . 'alias-template.php';
         $this->aliasGenerator = new PHPFileGenerator($aliasTemplateFilePath);
 
-        $recordTemplateFilePath = $templateFolderPath.DIRECTORY_SEPARATOR.'record-template.php';
+        $recordTemplateFilePath = $templateFolderPath . DIRECTORY_SEPARATOR . 'record-template.php';
         $this->recordGenerator = new PHPFileGenerator($recordTemplateFilePath);
 
-        $repositoryModelFilePath = $templateFolderPath.DIRECTORY_SEPARATOR.'repository-template.php';
+        $repositoryModelFilePath = $templateFolderPath . DIRECTORY_SEPARATOR . 'repository-template.php';
         $this->repositoryGenerator = new PHPFileGenerator($repositoryModelFilePath);
 
-        $listModelFilePath = $templateFolderPath.DIRECTORY_SEPARATOR.'list-template.php';
+        $listModelFilePath = $templateFolderPath . DIRECTORY_SEPARATOR . 'list-template.php';
         $this->listGenerator = new PHPFileGenerator($listModelFilePath);
     }
 
-    public function saveTable(\Database2Code\Struct\Table $table, string $targetDirectoryPath) {
+    public function saveTable(\Database2Code\Struct\Table $table, string $targetDirectoryPath)
+    {
         $entityName = $this->generateEntityName($table->getName());
 
         $this->generateFile($this->modelGenerator, $table, $targetDirectoryPath, $entityName);
-        $this->generateFile($this->aliasGenerator, $table, $targetDirectoryPath, $entityName.'Alias');
-        $this->generateFile($this->recordGenerator, $table, $targetDirectoryPath, 'Generated'.$entityName.'Record');
-        $this->generateFile($this->repositoryGenerator, $table, $targetDirectoryPath, 'Generated'.$entityName."Repository");
-        $this->generateFile($this->listGenerator, $table, $targetDirectoryPath, 'Generated'.$entityName."RecordList");
+        $this->generateFile($this->aliasGenerator, $table, $targetDirectoryPath, $entityName . 'Alias');
+        $this->generateFile($this->recordGenerator, $table, $targetDirectoryPath, 'Generated' . $entityName . 'Record');
+        $this->generateFile($this->repositoryGenerator, $table, $targetDirectoryPath, 'Generated' . $entityName . "Repository");
+        $this->generateFile($this->listGenerator, $table, $targetDirectoryPath, 'Generated' . $entityName . "RecordList");
         $this->generateOneTimeGeneratedFiles($entityName);
     }
 
-    protected function generateEntityName(string $tablename) : string
+    protected function generateEntityName(string $tablename): string
     {
         $tablename = $this->codeGeneratorConfig->getNameMap()[$tablename] ?? $tablename;
         return strtoupper($tablename[0]) . substr($tablename, 1);
@@ -78,7 +81,7 @@ class Database2CodeOutput implements Output{
                                     string $fileName): void
     {
         $fileContent = $fileGenerator->generateFromTable($table, $this->outputConfig);
-        $filePath = $targetDirectoryPath.DIRECTORY_SEPARATOR.$fileName.'.php';
+        $filePath = $targetDirectoryPath . DIRECTORY_SEPARATOR . $fileName . '.php';
         $this->saveFile($filePath, $fileContent);
     }
 
@@ -95,23 +98,26 @@ class Database2CodeOutput implements Output{
     {
         $namespace = $this->getNamespace($entityName);
 
-        $this->generateOneTimeGeneratedFileIfNotExists($entityName.'Record', $namespace);
-        $this->generateOneTimeGeneratedFileIfNotExists($entityName.'RecordList', $namespace);
-        $this->generateOneTimeGeneratedFileIfNotExists($entityName.'Repository', $namespace);
+        $this->generateOneTimeGeneratedFileIfNotExists($entityName . 'Record', $namespace);
+        $this->generateOneTimeGeneratedFileIfNotExists($entityName . 'RecordList', $namespace);
+        $this->generateOneTimeGeneratedFileIfNotExists($entityName . 'Repository', $namespace);
     }
 
-    private function getNamespace(string $entityName) : NamespaceObject
+    private function getNamespace(string $entityName): NamespaceObject
     {
         if (isset($this->codeGeneratorConfig->getModelName2NamespaceMap()[$entityName])) {
             return $this->codeGeneratorConfig->getModelName2NamespaceMap()[$entityName];
         } else {
-            return new NamespaceObject('generated', $this->codeGeneratorConfig->getGensrcFolderPath());
+            return new NamespaceObject(
+                $this->codeGeneratorConfig->getGeneratedFilesNamespace(),
+                $this->codeGeneratorConfig->getGensrcFolderPath()
+            );
         }
     }
 
     private function generateOneTimeGeneratedFileIfNotExists(string $name, NamespaceObject $namespace): void
     {
-        if(!is_dir($namespace->getFolderPath())) {
+        if (!is_dir($namespace->getFolderPath())) {
             mkdir($namespace->getFolderPath(), 0777, true);
         }
         $filePath = $namespace->getFolderPath() . DIRECTORY_SEPARATOR . $name . '.php';
@@ -123,9 +129,9 @@ class Database2CodeOutput implements Output{
 
     private function getOneTimeGeneratedFileContent(string $namespace, string $name): string
     {
-        $isGeneratedNamespace = $namespace=='generated';
-        $useStatement = $isGeneratedNamespace ? '' : "use generated\Generated{$name};\n";
-        If($isGeneratedNamespace) {
+        $isGeneratedNamespace = $namespace == $this->codeGeneratorConfig->getGeneratedFilesNamespace();
+        $useStatement = $isGeneratedNamespace ? '' : "use {$this->codeGeneratorConfig->getGeneratedFilesNamespace()}\Generated{$name};\n";
+        If ($isGeneratedNamespace) {
             $message = "@todo: Set target-location of this file using CodeGeneratorConfig->setModelName2NamespaceMap()! Meanwhile do not(!) place custom functionality yet, because it will be overwritten!";
         } else {
             $message = "Place custom functionality here";

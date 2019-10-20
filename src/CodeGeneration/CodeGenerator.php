@@ -34,7 +34,7 @@ class CodeGenerator
         $this->emptyGensrcFolder($genDirFolderPath);
 
         $outputConfig = new OutputConfig();
-        $outputConfig->setNamespace("generated");
+        $outputConfig->setNamespace(self::$currentConfig->getGeneratedFilesNamespace());
         $outputConfig->setPhpVersion("7.3");
         $templatesFolder = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.
             DIRECTORY_SEPARATOR.'code-generation'.DIRECTORY_SEPARATOR.'templates';

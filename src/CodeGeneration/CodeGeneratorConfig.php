@@ -20,6 +20,9 @@ class CodeGeneratorConfig
     private $gensrcFolderPath;
 
     /** @var string */
+    private $generatedFilesNamespace = 'generated';
+
+    /** @var string */
     private $copyrightInformation = '';
 
     public function __construct(string $gensrcFolderPath)
@@ -53,6 +56,16 @@ class CodeGeneratorConfig
     public function getGensrcFolderPath(): string
     {
         return $this->gensrcFolderPath;
+    }
+
+    public function getGeneratedFilesNamespace(): string
+    {
+        return $this->generatedFilesNamespace;
+    }
+
+    public function setGeneratedFilesNamespace(string $namespace): void
+    {
+        $this->generatedFilesNamespace = $namespace;
     }
 
     public function getCopyrightInformation(): string
