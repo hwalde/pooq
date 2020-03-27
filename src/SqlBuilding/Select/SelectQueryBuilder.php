@@ -10,7 +10,6 @@ namespace POOQ\SqlBuilding\Select;
 
 use POOQ\Condition;
 use function POOQ\Database;
-use POOQ\Exception\MissingResultException;
 use POOQ\Field;
 use POOQ\FieldList;
 use POOQ\FieldOrTable;
@@ -142,20 +141,20 @@ class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMain
         return $this;
     }
 
-    public function fetchOne() : string
+    public function fetchOne() : ?string
     {
         $result = Database()->selectOne($this->toSql());
         if($result === false) {
-            throw new MissingResultException('The query returned no result. fetchOne()-method expects at least one row with at least one column.');
+            return null;
         }
         return (string)$result;
     }
 
-    public function fetch(): Result
+    public function fetch(): ?Result
     {
         $row = Database()->selectRow($this->sql);
         if($row === false) {
-            throw new MissingResultException('The query returned zero rows. fetch()-method expects at least one row.');
+            return null;
         }
         return new Result($this->selectFieldList, $row);
     }

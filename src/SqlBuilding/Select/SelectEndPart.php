@@ -13,9 +13,9 @@ use POOQ\ResultList;
 
 interface SelectEndPart
 {
-    public function fetch() : Result;
+    public function fetch() : ?Result;
 
-    public function fetchOne() : string;
+    public function fetchOne() : ?string;
 
     /**
      * @return ResultList|Result[]
