@@ -18,10 +18,11 @@ class POOQ
     }
 
     public static function initialize(string $databaseName, string $databaseUsername, string $databasePassword,
-                                     string $databaseHostname, int $databasePort = 3306, ?string $charset = 'utf8') {
+                                      string $databaseHostname, int $databasePort = 3306, ?string $charset = 'utf8',
+                                      $databaseOptions = null) {
         $databaseHostname .= ':'.$databasePort;
         $charset = isset($charset) ? ';charset='.$charset : '';
-        self::$pdo = new \PDO('mysql:host='.$databaseHostname.';dbname=' . $databaseName . $charset, $databaseUsername, $databasePassword);
+        self::$pdo = new \PDO('mysql:host='.$databaseHostname.';dbname=' . $databaseName . $charset, $databaseUsername, $databasePassword, $databaseOptions);
         self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
