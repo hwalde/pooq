@@ -27,7 +27,7 @@ class CodeGenerator
     }
 
     public function convertDatabase(string $databaseName, string $databaseUsername, string $databasePassword,
-                                    string $databaseHostname, int $databasePort = 3306) {
+                                    string $databaseHostname, int $databasePort = 3306, $databaseOptions = null) {
         $genDirFolderPath = self::$currentConfig->getGensrcFolderPath();
         $this->validateGensrcFolderPath($genDirFolderPath);
 
@@ -40,7 +40,8 @@ class CodeGenerator
             DIRECTORY_SEPARATOR.'code-generation'.DIRECTORY_SEPARATOR.'templates';
         $service = new ConvertService(new Database2CodeOutput($templatesFolder, $outputConfig));
 
-        $inputConfig = new MySQLInputConfig($databaseUsername, $databasePassword, $databaseHostname, $databasePort);
+        $inputConfig = new MySQLInputConfig($databaseUsername, $databasePassword, $databaseHostname, $databasePort,
+            $databaseOptions);
         $service->convertDatabase($inputConfig, $databaseName, $genDirFolderPath);
     }
 
