@@ -14,7 +14,7 @@ use POOQ\SqlBuilding\SqlBuildingHelperTrait;
 use POOQ\Table;
 use POOQ\TableAlias;
 
-class DeleteQueryBuilder implements DeleteWherePart, DeleteEndPart
+class DeleteQueryBuilder implements DeleteWherePart, DeleteOnPart, DeleteEndPart
 {
     use SqlBuildingHelperTrait;
 
@@ -28,6 +28,24 @@ class DeleteQueryBuilder implements DeleteWherePart, DeleteEndPart
     public function delete($table): DeleteWherePart
     {
         $this->sql = 'DELETE FROM '.$this->getQuotedTableName($table);
+        return $this;
+    }
+
+    public function innerJoin($table): DeleteOnPart
+    {
+        $this->sql .= ' INNER JOIN '.$this->getQuotedTableName($table);
+        return $this;
+    }
+
+    public function leftJoin($table): DeleteOnPart
+    {
+        $this->sql .= ' LEFT JOIN '.$this->getQuotedTableName($table);
+        return $this;
+    }
+
+    public function on(Condition $condition): DeleteWherePart
+    {
+        $this->sql .= ' ON '.$condition->toSql();
         return $this;
     }
 

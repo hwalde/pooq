@@ -13,8 +13,21 @@ use POOQ\Condition;
 interface DeleteWherePart
 {
     /**
+     * @param string|Table $table Either the fully qualified name or the instance of a class implementing the table interface
+     * @return DeleteWherePart
+     */
+    public function innerJoin($table) : DeleteOnPart;
+
+    /**
+     * @param string|Table $table Either the fully qualified name or the instance of a class implementing the table interface
+     * @return DeleteWherePart
+     */
+    public function leftJoin($table) : DeleteOnPart;
+
+    /**
      * @param Condition $condition
      * @return DeleteEndPart
      */
     public function where(Condition $condition) : DeleteEndPart;
+
 }

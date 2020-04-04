@@ -70,6 +70,7 @@ function insertInto($table) : InsertSetPart
 }
 
 /**
+ * @todo Implement multi-table delete ( see "Multiple-Table Syntax" and "Multi-Table Deletes" in https://dev.mysql.com/doc/refman/8.0/en/delete.html )
  * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
  * @return DeleteWherePart
  */
