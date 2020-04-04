@@ -91,7 +91,7 @@ class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMain
      */
     public function from($table): SelectMainPart
     {
-        $this->sql .= ' FROM '.$this->getQuotedTableName($table);
+        $this->sql .= ' FROM '.$this->getQuotedTableNameDefinition($table);
         return $this;
     }
 
@@ -101,13 +101,13 @@ class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMain
      */
     public function innerJoin($table): SelectOnPart
     {
-        $this->sql .= ' INNER JOIN '.$this->getQuotedTableName($table);
+        $this->sql .= ' INNER JOIN '.$this->getQuotedTableNameDefinition($table);
         return $this;
     }
 
     public function leftJoin($table): SelectOnPart
     {
-        $this->sql .= ' LEFT JOIN '.$this->getQuotedTableName($table);
+        $this->sql .= ' LEFT JOIN '.$this->getQuotedTableNameDefinition($table);
         return $this;
     }
 

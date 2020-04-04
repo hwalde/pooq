@@ -11,20 +11,26 @@ namespace POOQ\SqlBuilding;
 use POOQ\FieldOrTable;
 use POOQ\Table;
 use POOQ\TableAlias;
+use function POOQ\Database;
 
 trait SqlBuildingHelperTrait
 {
     /**
      * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
      */
-    private function getQuotedTableName($table): string
+    private function getQuotedTableNameDefinition($table): string
     {
         $table = $this->generateTableObject($table);
 
+        $quotedTableName = Database()->quoteIdentifier($table->getTableName());
+
         if ($table instanceof TableAlias) {
-            return $table->getTableName() . ' ' . $table->getAliasName();
+            if($table->getAliasName() == $table->getTableName()) {
+                return $quotedTableName;
+            }
+            return $quotedTableName . ' ' . Database()->quoteIdentifier($table->getAliasName());
         } else {
-            return $table->getTableName();
+            return $quotedTableName;
         }
     }
 
@@ -41,6 +47,17 @@ trait SqlBuildingHelperTrait
             return $table;
         } else {
             throw new \InvalidArgumentException('Expected instance of "' . Table::class . '" or "' . TableAlias::class . '"!');
+        }
+    }
+
+    private function getQuotedTableName($table): string
+    {
+        $table = $this->generateTableObject($table);
+
+        if ($table instanceof TableAlias) {
+            return Database()->quoteIdentifier($table->getAliasName());
+        } else {
+            return Database()->quoteIdentifier($table->getTableName());;
         }
     }
 }

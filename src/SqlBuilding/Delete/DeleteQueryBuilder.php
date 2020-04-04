@@ -27,19 +27,19 @@ class DeleteQueryBuilder implements DeleteWherePart, DeleteOnPart, DeleteEndPart
      */
     public function delete($table): DeleteWherePart
     {
-        $this->sql = 'DELETE FROM '.$this->getQuotedTableName($table);
+        $this->sql = 'DELETE '.$this->getQuotedTableName($table).' FROM '.$this->getQuotedTableNameDefinition($table);
         return $this;
     }
 
     public function innerJoin($table): DeleteOnPart
     {
-        $this->sql .= ' INNER JOIN '.$this->getQuotedTableName($table);
+        $this->sql .= ' INNER JOIN '.$this->getQuotedTableNameDefinition($table);
         return $this;
     }
 
     public function leftJoin($table): DeleteOnPart
     {
-        $this->sql .= ' LEFT JOIN '.$this->getQuotedTableName($table);
+        $this->sql .= ' LEFT JOIN '.$this->getQuotedTableNameDefinition($table);
         return $this;
     }
 

@@ -33,7 +33,7 @@ class UpdateQueryBuilder implements UpdateSetPart, UpdateWherePart, UpdateEndPar
     function update($table) : UpdateSetPart
     {
         $this->hasSetBeenCalled = false;
-        $this->sql = 'UPDATE '.$this->getQuotedTableName($table).' SET ';
+        $this->sql = 'UPDATE '.$this->getQuotedTableNameDefinition($table).' SET ';
         return $this;
     }
 

@@ -85,7 +85,7 @@ class InsertQueryBuilder implements InsertSetPart, InsertAfterSetPart
             throw new \InvalidArgumentException('Cannot execute empty insert-query! Add at least one set(..)-method call!');
         }
 
-        $sql = 'INSERT INTO ' . $this->getQuotedTableName($this->table);
+        $sql = 'INSERT INTO ' . $this->getQuotedTableNameDefinition($this->table);
 
         $quotedColumnList = [];
 
