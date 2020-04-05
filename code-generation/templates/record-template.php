@@ -83,7 +83,7 @@ END;
     
     public function has{$upperCaseName}(): bool
     {
-        return \$this->{$name}->hasBeenSet();
+        return \$this->{$name}->getValue() !== null;
     }    
 $getterPHPDoc
     public function get{$upperCaseName}()$returnTypeDef

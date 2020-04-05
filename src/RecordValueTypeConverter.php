@@ -15,6 +15,10 @@ class RecordValueTypeConverter
             throw new \Error('"' . get_class($table) . '" __getColumn2TypeMap() entry for column "' . $field->getColumnName() . '" missing!');
         }
 
+        if($value === null) {
+            return null;
+        }
+
         // todo: What about null?
         switch ($table->__getColumn2TypeMap()[$field->getColumnName()]) {
             case 'string':
