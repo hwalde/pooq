@@ -74,7 +74,7 @@ function insertInto($table) : InsertSetPart
  * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
  * @return DeleteWherePart
  */
-function delete($table) : DeleteWherePart
+function delete(...$tableList) : DeleteWherePart
 {
-    return (new DeleteQueryBuilder())->delete($table);
+    return (new DeleteQueryBuilder())->delete(...$tableList);
 }

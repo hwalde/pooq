@@ -22,12 +22,18 @@ class DeleteQueryBuilder implements DeleteWherePart, DeleteOnPart, DeleteEndPart
     private $sql;
 
     /**
-     * @param string|Table|TableAlias $table Either the fully qualified name or the instance of a class implementing the table interface
+     * @param $firstTable Either the fully qualified name or the instance of a class implementing the table interface
+     * @param mixed ...$tableList A list of the fully qualified name or the instance of a class implementing the table interface
      * @return DeleteWherePart
      */
-    public function delete($table): DeleteWherePart
+    public function delete($firstTable, ...$tableList): DeleteWherePart
     {
-        $this->sql = 'DELETE '.$this->getQuotedTableName($table).' FROM '.$this->getQuotedTableNameDefinition($table);
+        array_unshift($tableList, $firstTable);
+        $quotedTableNameList = [];
+        foreach ($tableList as $table) {
+            $quotedTableNameList[] = $this->getQuotedTableName($table);
+        }
+        $this->sql = 'DELETE '.implode(',', $quotedTableNameList).' FROM '.$this->getQuotedTableNameDefinition($firstTable);
         return $this;
     }
 
