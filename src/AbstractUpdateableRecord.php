@@ -18,7 +18,7 @@ abstract class AbstractUpdateableRecord implements UpdateableRecord
      * insert or update the record to the database
      * @return int The number of affected rows
      */
-    public function store(): ?int
+    public function store(): int
     {
         if($this->existsInDatabase()) {
             return $this->updateRecord();
