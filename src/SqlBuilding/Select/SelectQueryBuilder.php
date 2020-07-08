@@ -34,12 +34,34 @@ class SelectQueryBuilder implements SelectSelectPart, SelectFromPart, SelectMain
      * @param FieldOrTable[]|string ...$fieldOrTableList Can be an instance of FieldOrTable or a fully qualified name to such class
      * @return SelectFromPart
      */
-    function select(...$fieldOrTableList) : SelectFromPart
+    public function select(...$fieldOrTableList) : SelectFromPart
+    {
+        return $this->createSelectClause(false, ...$fieldOrTableList);
+    }
+
+    /**
+     * @param FieldOrTable[]|string ...$fieldOrTableList Can be an instance of FieldOrTable or a fully qualified name to such class
+     * @return SelectFromPart
+     */
+    public function selectDistinct(...$fieldOrTableList) : SelectFromPart
+    {
+        return $this->createSelectClause(true, ...$fieldOrTableList);
+    }
+
+    /**
+     * @param bool $distinct Is it a SELECT DISTINCT query?
+     * @param FieldOrTable[]|string ...$fieldOrTableList Can be an instance of FieldOrTable or a fully qualified name to such class
+     * @return SelectFromPart
+     */
+    private function createSelectClause(bool $distinct, ...$fieldOrTableList) : SelectFromPart
     {
         if(count($fieldOrTableList)==0) {
             throw new \Error('select clause is empty!');
         }
         $this->sql = 'SELECT ';
+        if($distinct) {
+            $this->sql .= 'DISTINCT';
+        }
         $this->selectFieldList = SelectFieldList::generateFromFieldList(
             $this->convertToFieldList($fieldOrTableList)
         );

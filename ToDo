@@ -18,3 +18,4 @@ Future releases:
 - Remove Table::from as it leads to miss-use for example select(Table::from) instead of select(Table::class)
 - Improvement of update query generation: "UPDATE tableName SET `columnName` = 'Hallo Welt!' WHERE `columnName`.`id` = 5"
     to "UPDATE `tableName` SET `tableName`.`columnName` = 'Hallo Welt!' WHERE `columnName`.`id` = 5"
+- Implement select count distinct ( see: https://stackoverflow.com/questions/49449495/jooq-select-count-distinct-from-group )

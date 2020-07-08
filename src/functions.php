@@ -37,6 +37,16 @@ function select(...$fieldOrTableList) : SelectFromPart
 }
 
 /**
+ * @param FieldOrTable[]|string ...$fieldOrTableList Can be an instance of FieldOrTable or a fully qualified name to such class
+ * @return SelectFromPart
+ */
+function selectDictinct(...$fieldOrTableList) : SelectFromPart
+{
+    $qb = new SelectQueryBuilder();
+    return call_user_func_array([$qb, 'selectDistinct'], $fieldOrTableList);
+}
+
+/**
  * Create an "SELECT COUNT(*) FROM ..." query
  * @return SelectFromPart
  */
