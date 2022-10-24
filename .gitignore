@@ -5,3 +5,4 @@ vendor
 composer.lock
 pooq.iml
 test.php
+composer.phar

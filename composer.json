@@ -9,12 +9,12 @@
     "hwalde/database2code": "dev-master"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.0"
+    "phpunit/phpunit": "~9.5"
   },
   "authors": [
     {
       "name": "Herbert Walde",
-      "email": "herbert.walde@gmail.com"
+      "email": "info@herbert-walde.de"
     }
   ],
   "autoload": {
