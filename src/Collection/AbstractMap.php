@@ -41,26 +41,26 @@ abstract class AbstractMap extends \ArrayObject
 
     abstract function getValueElementType() : VariableType;
 
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): mixed
     {
         $this->validateKey($key);
         return parent::offsetGet($key);
     }
 
-    public function offsetSet($key, $newval)
+    public function offsetSet(mixed $key, mixed $newval): void
     {
         $this->validateKey($key);
         $this->validateValue($newval);
         parent::offsetSet($key, $newval);
     }
 
-    public function offsetExists($key)
+    public function offsetExists(mixed $key): bool
     {
         $this->validateKey($key);
         return parent::offsetExists($key);
     }
 
-    public function append($value)
+    public function append(mixed $value): void
     {
         if($this->getKeyElementType() instanceof VariableTypeInteger) {
             $this->validateValue($value);

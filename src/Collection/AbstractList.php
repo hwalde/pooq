@@ -29,13 +29,13 @@ abstract class AbstractList extends \ArrayObject
 
     abstract function getListElementType() : VariableType;
 
-    public function offsetSet($key, $value): void
+    public function offsetSet(mixed $key, mixed $value): void
     {
         $this->validateValue($value);
         parent::offsetSet($key, $value);
     }
 
-    public function append($value): void
+    public function append(mixed $value): void
     {
         $this->validateValue($value);
         parent::append($value);
