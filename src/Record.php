@@ -14,4 +14,10 @@ interface Record
      * @return Table
      */
     public function __getModel();
+
+    /**
+     * Returns an assoc array (name => value)
+     * @return array
+     */
+    public function toAssoc(): array;
 }

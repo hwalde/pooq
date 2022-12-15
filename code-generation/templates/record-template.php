@@ -110,6 +110,11 @@ foreach ($table->getColumns() as $column) {
     $methods .= PHPFile__record__getColumnMethods($column, $config, $nameMap).PHP_EOL;
 }
 
+$assocArrayRows = '';
+foreach ($table->getColumns() as $column) {
+    $fieldName = PHPFile__POOQ__getMappedName($column, $nameMap);
+    $assocArrayRows .= "\t\t\t'$fieldName' => \$this->{$fieldName}->getValue(),\n";
+}
 
 $constructorAssignments = '';
 foreach ($table->getColumns() as $column) {
@@ -165,6 +170,16 @@ $methods
     public function __getModel(): {$name}
     {
         return new {$name}();
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public function toAssoc(): array
+    {
+        return [
+$assocArrayRows
+        ];
     }
 }
 END;

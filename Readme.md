@@ -79,7 +79,7 @@ FROM `thread`
 ...
 ```
 
-#### Mapping results to objects
+#### Mapping results to objects (so called Records)
 ```php
 $f = Forum::as('f'); 
 $t = Thread::as('t'); 
@@ -89,13 +89,27 @@ $resultList = select($f, $t->title()) // Select all fields of Forum and the titl
     ->innerJoin($f)->on($f->forumid()->eq($t->forumid())) // "INNER JOIN forum f ON `f`.`forumid` = `t`.`forumid`"
     ->fetchAll(); // Executes the query and returns ResultList
     
-/** @var ThreadRecord[] $threadList */
-$threadList = $resultList->into($t); // Maps all Thread fields of ResultList into ThreadRecordList
+/** @var ThreadRecord[] $threadRecordList */
+$threadRecordList = $resultList->into($t); // Maps all Thread fields of ResultList into ThreadRecordList
+
 foreach($threadList as $thread) { // for each row
     echo $thread->getTitle(); // output the title
 }
+```
 
-// (Yes we could do some stuff with the forum fields here as well.)
+#### Records can be optionally inserted/updated/refreshed/deleted in an ORM fashion
+```php
+// note: this is only supported for tables containing a primary-key
+
+$record->refresh(); // Reload the record from the database
+$record->store(); // insert or update the record to the database
+$record->delete(); // deletes this record in the database
+```
+
+#### Converting Records to arrays
+```php
+$array = $recordList->toAssoc();  // Maps entire record-list
+$array = $record->toAssoc(); // Maps only a single record
 ```
 
 POOQ can handle queries with overlapping column names (from different tables). For example, if forum and thread would both have a column "title" then each value would still be mapped to the correct object. 

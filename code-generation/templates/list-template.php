@@ -33,11 +33,11 @@ return <<<END
 $copyright
 namespace $namespace;
 
-use POOQ\Collection\AbstractList;
+use POOQ\Collection\RecordList;
 use POOQ\Collection\VariableType;
 use POOQ\Collection\VariableTypeInstance;
 $useStatements
-class Generated{$name}RecordList extends AbstractList
+class Generated{$name}RecordList extends RecordList
 {
     function getListElementType(): VariableType
     {
