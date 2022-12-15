@@ -149,6 +149,14 @@ SET `forumId` = (SELECT `forum`.forumId` FROM `forum` WHERE `forum`.`title` = 'S
 WHERE `id` = 123
 ```
 
+#### Custom WHERE-clauses
+Not everything is implemented yet.. so being able to write custom where clauses is quite useful:
+```php
+delete(Session::class) 
+    ->where(new SimpleCondition(Session::creationDatetime()->toSql() . ' < ' . value($dateTime->format('Y-m-d H:i:s'))->toSql()))
+    ->execute();  
+```
+
 ### Code Generation
 ```php
 $config = new \POOQ\CodeGeneration\CodeGeneratorConfig(__DIR__.DIRECTORY_SEPARATOR.'gensrc');
